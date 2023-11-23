@@ -29,7 +29,7 @@ export const authRouter = router({
         data: { email, password, role: "user" },
       });
 
-      return { success: true, sendToEmail: email };
+      return { success: true, sentToEmail: email };
     }),
 
   verifyEmail: publicProcedure
@@ -47,5 +47,26 @@ export const authRouter = router({
       if (!isVerified) throw new TRPCError({ code: "UNAUTHORIZED" });
 
       return { success: true };
+    }),
+
+  signIn: publicProcedure
+    .input(AuthCredentialsValidator)
+    .mutation(async ({ input, ctx }) => {
+      const { email, password } = input;
+      const payload = await getPayloadClient({});
+      const { res } = ctx;
+
+      try {
+        await payload.login({
+          collection: "users",
+          data: {
+            email,
+            password,
+          },
+          res,
+        });
+      } catch (err) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
     }),
 });

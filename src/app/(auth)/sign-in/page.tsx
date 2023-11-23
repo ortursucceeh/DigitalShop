@@ -16,7 +16,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ZodError } from "zod";
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -43,7 +42,6 @@ const Page = () => {
   const { mutate: signIn, isLoading } = trpc.auth.signIn.useMutation({
     onSuccess: () => {
       toast.success(`Signed in successfully`);
-      router.refresh();
 
       if (origin) {
         return router.push(`/${origin}`);
@@ -52,6 +50,7 @@ const Page = () => {
         return router.push("/sell");
       }
       router.push("/");
+      router.refresh();
     },
     onError: (err) => {
       if (err.data?.code === "UNAUTHORIZED") {

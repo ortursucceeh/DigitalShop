@@ -53,8 +53,9 @@ export const authRouter = router({
     .input(AuthCredentialsValidator)
     .mutation(async ({ input, ctx }) => {
       const { email, password } = input;
-      const payload = await getPayloadClient({});
       const { res } = ctx;
+
+      const payload = await getPayloadClient({});
 
       try {
         await payload.login({
@@ -65,6 +66,8 @@ export const authRouter = router({
           },
           res,
         });
+
+        return { success: true };
       } catch (err) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }

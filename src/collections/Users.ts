@@ -3,11 +3,11 @@ import { CollectionConfig } from "payload/types";
 export const Users: CollectionConfig = {
   slug: "users",
   auth: {
-    verify: {
-      generateEmailHTML: ({ token }) => {
-        return `<a href="${process.env.NEXT_PUBLIC_SERVICE_URL}/virify-email?token=${token}">Hello</a>`;
-      },
-    },
+    // verify: {
+    //   generateEmailHTML: ({ token }) => {
+    //     return `<a href="${process.env.NEXT_PUBLIC_SERVICE_URL}/virify-email?token=${token}">Hello</a>`;
+    //   },
+    // },
   },
   access: {
     read: () => true,

@@ -9,7 +9,7 @@ export const authRouter = router({
     .input(AuthCredentialsValidator)
     .mutation(async ({ input }) => {
       const { email, password } = input;
-      const payload = await getPayloadClient({});
+      const payload = await getPayloadClient();
 
       // check if user already exists
 
@@ -37,7 +37,7 @@ export const authRouter = router({
     .query(async ({ input }) => {
       const { token } = input;
 
-      const payload = await getPayloadClient({});
+      const payload = await getPayloadClient();
 
       const isVerified = await payload.verifyEmail({
         collection: "users",
@@ -55,7 +55,7 @@ export const authRouter = router({
       const { email, password } = input;
       const { res } = ctx;
 
-      const payload = await getPayloadClient({});
+      const payload = await getPayloadClient();
 
       try {
         await payload.login({

@@ -4,9 +4,12 @@ import { authRouter } from "./auth-router";
 import { z } from "zod";
 import { QueryValidator } from "../lib/validators/query-validator";
 import { getPayloadClient } from "../get-payload";
+import { paymentRouter } from "./payment-router";
 
 export const appRouter = router({
   auth: authRouter,
+  payment: paymentRouter,
+
   getInfiniteProducts: publicProcedure
     .input(
       z.object({
@@ -19,7 +22,7 @@ export const appRouter = router({
       const { query, cursor } = input;
       const { sort, limit, ...queryOpts } = query;
 
-      const payload = await getPayloadClient({});
+      const payload = await getPayloadClient();
 
       const parsedQueryOpts: Record<string, { equals: string }> = {};
 

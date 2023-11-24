@@ -50,6 +50,7 @@ const ImageSlider = ({ urls }: ImageSliderProps) => {
             "hover:bg-primary-300 text-primary-800 opacity-100":
               !slideConfig.isEnd,
           })}
+          disabled={slideConfig.isEnd}
           aria-label="next image"
         >
           <ChevronRight className="h-4 w-4 text-zinc-700" />{" "}

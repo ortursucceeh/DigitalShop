@@ -7,6 +7,7 @@ import { Product } from "../payload-types";
 const AddToCartButton = ({ product }: { product: Product }) => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const { addItem } = useCart();
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsSuccess(false);
@@ -21,7 +22,9 @@ const AddToCartButton = ({ product }: { product: Product }) => {
       className="w-full"
       onClick={() => {
         addItem(product);
+        setIsSuccess(true);
       }}
+      disabled={isSuccess}
     >
       {isSuccess ? "Added!" : "Add to cart"}
     </Button>

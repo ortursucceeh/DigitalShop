@@ -1,4 +1,15 @@
 "use strict";
+// import express from "express";
+// import { getPayloadClient } from "./get-payload";
+// import { nextApp, nextHandler } from "./next-utils";
+// import * as trpcExpress from "@trpc/server/adapters/express";
+// import { appRouter } from "./trpc";
+// import { inferAsyncReturnType } from "@trpc/server";
+// import bodyParser from "body-parser";
+// import { IncomingMessage } from "http";
+// import { stripeWebhookHandler } from "./webhooks";
+// import nextBuild from "next/dist/build";
+// import path from "path";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -62,6 +73,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// const app = express();
+// const PORT = Number(process.env.PORT) || 3000;
+// const createContext = ({
+//   req,
+//   res,
+// }: trpcExpress.CreateExpressContextOptions) => ({
+//   req,
+//   res,
+// });
+// export type ExpressContextType = inferAsyncReturnType<typeof createContext>;
+// export type WebhookRequest = IncomingMessage & { rawBody: Buffer };
+// const start = async () => {
+//   const webhookMiddleware = bodyParser.json({
+//     verify: (req: WebhookRequest, _, buffer) => {
+//       req.rawBody = buffer;
+//     },
+//   });
+//   app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
+//   const payload = await getPayloadClient({
+//     initOptions: {
+//       express: app,
+//       onInit: async (cms) => {
+//         cms.logger.info(`Admin URL ${cms.getAdminURL()}`);
+//       },
+//     },
+//   });
+//   if (process.env.NEXT_BUILD) {
+//     app.listen(PORT, async () => {
+//       payload.logger.info("Next.js is building for production.");
+//       // @ts-expect-error
+//       await nextBuild(path.join(__dirname, "../"));
+//       process.exit();
+//     });
+//     return;
+//   }
+//   app.use(
+//     "/api/trpc",
+//     trpcExpress.createExpressMiddleware({
+//       router: appRouter,
+//       createContext,
+//     })
+//   );
+//   app.use((req, res) => nextHandler(req, res));
+//   nextApp.prepare().then(() => {
+//     payload.logger.info("Next.js started");
+//     app.listen(PORT, async () => {
+//       payload.logger.info(
+//         `Next.js App URL: ${process.env.NEXT_PUBLIC_SERVER_URL}`
+//       );
+//     });
+//   });
+// };
+// start();
 var express_1 = __importDefault(require("express"));
 var get_payload_1 = require("./get-payload");
 var next_utils_1 = require("./next-utils");
@@ -71,6 +135,7 @@ var body_parser_1 = __importDefault(require("body-parser"));
 var webhooks_1 = require("./webhooks");
 var build_1 = __importDefault(require("next/dist/build"));
 var path_1 = __importDefault(require("path"));
+var url_1 = require("url");
 var app = (0, express_1.default)();
 var PORT = Number(process.env.PORT) || 3000;
 var createContext = function (_a) {
@@ -81,7 +146,7 @@ var createContext = function (_a) {
     });
 };
 var start = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var webhookMiddleware, payload;
+    var webhookMiddleware, payload, cartRouter;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -96,7 +161,7 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                             express: app,
                             onInit: function (cms) { return __awaiter(void 0, void 0, void 0, function () {
                                 return __generator(this, function (_a) {
-                                    cms.logger.info("Admin URL ".concat(cms.getAdminURL()));
+                                    cms.logger.info("Admin URL: ".concat(cms.getAdminURL()));
                                     return [2 /*return*/];
                                 });
                             }); },
@@ -109,7 +174,7 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    payload.logger.info("Next.js is building for production.");
+                                    payload.logger.info("Next.js is building for production");
                                     // @ts-expect-error
                                     return [4 /*yield*/, (0, build_1.default)(path_1.default.join(__dirname, "../"))];
                                 case 1:
@@ -122,6 +187,17 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                     }); });
                     return [2 /*return*/];
                 }
+                cartRouter = express_1.default.Router();
+                cartRouter.use(payload.authenticate);
+                cartRouter.get("/", function (req, res) {
+                    var request = req;
+                    if (!request.user)
+                        return res.redirect("/sign-in?origin=cart");
+                    var parsedUrl = (0, url_1.parse)(req.url, true);
+                    var query = parsedUrl.query;
+                    return next_utils_1.nextApp.render(req, res, "/cart", query);
+                });
+                app.use("/cart", cartRouter);
                 app.use("/api/trpc", trpcExpress.createExpressMiddleware({
                     router: trpc_1.appRouter,
                     createContext: createContext,

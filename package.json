@@ -2,6 +2,7 @@
   "name": "digitalhippo",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/server.js",
   "scripts": {
     "dev": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts nodemon",
     "build:payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload build",
@@ -12,6 +13,9 @@
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "lint": "next lint"
+  },
+  "resolutions": {
+    "cliui": "7.0.2",
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

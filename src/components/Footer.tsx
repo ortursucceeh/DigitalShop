@@ -41,7 +41,7 @@ const Footer = () => {
                     can do so in minutes
                     <Link
                       href="/sign-in?as=seller"
-                      className="whitespace-nowrap
+                      className="whitespace-nowrap ml-2
                       font-medium text-black hover:text-gray-600"
                     >
                       Get started &rarr;
